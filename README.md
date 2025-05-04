@@ -39,7 +39,7 @@ Follow these steps to get started:
 -   Activate the virtual environment using Poetry:
 
     ```bash
-    poetry shell
+    poetry env activate
 
     ```
 
