@@ -1,0 +1,25 @@
+[project]
+name = "employer-management"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "CioF",email = "coder.walidhasan@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "djangorestframework (==3.15)",
+    "djangorestframework-simplejwt (==5.3)",
+    "python-decouple (==3.8)",
+    "psycopg2-binary (>=2.9.10,<3.0.0)",
+    "django (==5.1)",
+    "setuptools (>=80.3.0,<81.0.0)",
+]
+
+[tool.poetry]
+packages = [{include = "employer_management", from = "src"}]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"

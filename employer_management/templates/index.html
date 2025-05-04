@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block content %}
+<div x-data="{
+  isLoggedIn: localStorage.getItem('accessToken') ? true : false,
+  showLogin: true,
+  showSignup: false,
+  showEmployerForm: false,
+  selectedEmployer: null,
+  email: '', password: '', firstName: '', lastName: '', passwordConfirm: '',
+  companyName: '', contactPersonName: '', emailEmployer: '', phoneNumber: '', address: '',
+  error: '', employers: []
+}" x-init="
+  $watch('isLoggedIn', (value) => { if (!value) { localStorage.removeItem('accessToken'); } });
+  fetchEmployers();
+">
+  <div x-show="isLoggedIn" x-cloak class="min-h-screen">
+    <nav class="bg-blue-600 text-white p-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold">Employer Management</h1>
+      <button @click="handleLogout()" class="bg-red-500 p-2 rounded hover:bg-red-600">Logout</button>
+    </nav>
+    <div class="container mx-auto p-4">
+      <h2 class="text-2xl font-bold mb-4">Employers</h2>
+      <button @click="showEmployerForm = true; selectedEmployer = null" class="mb-4 bg-green-500 text-white p-2 rounded hover:bg-green-600">Add Employer</button>
+      <div id="employer-list" hx-get="{% url 'employers:employer-list' %}" hx-trigger="load, every 5s" hx-headers='{"Authorization": "Bearer " + localStorage.getItem("accessToken")}' hx-target="#employer-list" x-show="employers.length > 0">
+        <template x-for="employer in employers" :key="employer.id">
+          <div class="flex justify-between items-center bg-white p-4 rounded shadow my-2">
+            <span x-text="employer.company_name + ' - ' + employer.email"></span>
+            <div>
+              <button @click="selectedEmployer = employer; showEmployerForm = true" class="mr-2 bg-yellow-500 text-white p-2 rounded hover:bg-yellow-600">Edit</button>
+              <button @click="handleDelete(employer.id)" class="bg-red-500 text-white p-2 rounded hover:bg-red-600">Delete</button>
+            </div>
+          </div>
+        </template>
+        <p x-show="employers.length === 0" class="text-gray-500">No employers found.</p>
+      </div>
+      <div x-show="showEmployerForm" x-cloak>
+        <div class="bg-white p-6 rounded-lg shadow-lg">
+          <h2 class="text-2xl font-bold mb-4" x-text="selectedEmployer ? 'Edit Employer' : 'Add Employer'"></h2>
+          <p x-show="error" class="text-red-500 mb-4" x-text="error"></p>
+          <form @submit.prevent="handleEmployerSubmit" class="space-y-4">
+            <input type="text" x-model="companyName" placeholder="Company Name" class="w-full p-2 border rounded" required>
+            <input type="text" x-model="contactPersonName" placeholder="Contact Person Name" class="w-full p-2 border rounded" required>
+            <input type="email" x-model="emailEmployer" placeholder="Email" class="w-full p-2 border rounded" required>
+            <input type="text" x-model="phoneNumber" placeholder="Phone Number" class="w-full p-2 border rounded" required>
+            <textarea x-model="address" placeholder="Address" class="w-full p-2 border rounded" required></textarea>
+            <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600" x-text="selectedEmployer ? 'Update' : 'Add'"></button>
+            <button type="button" @click="showEmployerForm = false; selectedEmployer = null" class="w-full mt-2 bg-red-500 text-white p-2 rounded hover:bg-red-600">Cancel</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div x-show="!isLoggedIn" x-cloak class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center">
+    <div x-show="showLogin" x-cloak class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <h2 class="text-2xl font-bold mb-4">Login</h2>
+      <p x-show="error" class="text-red-500 mb-4" x-text="error"></p>
+      <form @submit.prevent="handleLogin" class="space-y-4">
+        <input type="email" x-model="email" placeholder="Email" class="w-full p-2 border rounded" required>
+        <input type="password" x-model="password" placeholder="Password" class="w-full p-2 border rounded" required>
+        <button type="submit" class="w-full bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Login</button>
+      </form>
+      <p class="mt-4 text-center">
+        No account? <a href="#" @click="showLogin = false; showSignup = true; error = ''" class="text-blue-500">Sign up</a>
+      </p>
+    </div>
+    <div x-show="showSignup" x-cloak class="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+      <h2 class="text-2xl font-bold mb-4">Sign Up</h2>
+      <p x-show="error" class="text-red-500 mb-4" x-text="error"></p>
+      <form @submit.prevent="handleSignup" class="space-y-4">
+        <input type="email" x-model="email" placeholder="Email" class="w-full p-2 border rounded" required>
+        <input type="text" x-model="firstName" placeholder="First Name" class="w-full p-2 border rounded" required>
+        <input type="text" x-model="lastName" placeholder="Last Name" class="w-full p-2 border rounded" required>
+        <input type="password" x-model="password" placeholder="Password" class="w-full p-2 border rounded" required>
+        <input type="password" x-model="passwordConfirm" placeholder="Confirm Password" class="w-full p-2 border rounded" required>
+        <button type="submit" class="w-full bg-green-500 text-white p-2 rounded hover:bg-green-600">Sign Up</button>
+      </form>
+      <p class="mt-4 text-center">
+        Already have an account? <a href="#" @click="showSignup = false; showLogin = true; error = ''" class="text-blue-500">Login</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

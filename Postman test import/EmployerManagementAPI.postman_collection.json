@@ -1,0 +1,269 @@
+{
+    "info": {
+        "name": "Employer Management API",
+        "_postman_id": "e5d9f2a1-9b3e-4f6c-8d7b-f1c2a3d4e5f6",
+        "description": "A Postman collection for testing the Employer Management System API.",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+    },
+    "item": [
+        {
+            "name": "Signup",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"email\": \"hr@example.com\", \"first_name\": \"HR\", \"last_name\": \"Team\", \"password\": \"securepassword123\", \"password_confirm\": \"securepassword123\"}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/auth/signup/",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "auth",
+                        "signup",
+                        ""
+                    ]
+                },
+                "description": "Register a new user."
+            },
+            "response": []
+        },
+        {
+            "name": "Login",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"email\": \"hr@example.com\", \"password\": \"securepassword123\"}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/auth/login/",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "auth",
+                        "login",
+                        ""
+                    ]
+                },
+                "description": "Log in and retrieve access token."
+            },
+            "response": [],
+            "event": [
+                {
+                    "listen": "test",
+                    "script": {
+                        "type": "text/javascript",
+                        "exec": [
+                            "var jsonData = pm.response.json();",
+                            "if (jsonData.access) {",
+                            "    pm.environment.set('access_token', jsonData.access);",
+                            "    console.log('Access token set:', jsonData.access);",
+                            "}"
+                        ]
+                    }
+                }
+            ]
+        },
+        {
+            "name": "List Employers",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{access_token}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/employers/",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "employers",
+                        ""
+                    ]
+                },
+                "description": "Retrieve the list of employers."
+            },
+            "response": []
+        },
+        {
+            "name": "Create Employer",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{access_token}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"company_name\": \"Test Corp\", \"contact_person_name\": \"John Doe\", \"email\": \"john@test.com\", \"phone_number\": \"123-456-7890\", \"address\": \"123 Main St\"}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/employers/",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "employers",
+                        ""
+                    ]
+                },
+                "description": "Add a new employer."
+            },
+            "response": []
+        },
+        {
+            "name": "Retrieve Employer",
+            "request": {
+                "method": "GET",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{access_token}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/employers/1/",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "employers",
+                        "1",
+                        ""
+                    ]
+                },
+                "description": "Retrieve a specific employer by ID (replace '1' with the actual ID)."
+            },
+            "response": []
+        },
+        {
+            "name": "Update Employer",
+            "request": {
+                "method": "PUT",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    },
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{access_token}}"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"company_name\": \"Updated Corp\", \"contact_person_name\": \"Jane Doe\", \"email\": \"jane@test.com\", \"phone_number\": \"987-654-3210\", \"address\": \"456 Main St\"}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/employers/1/",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "employers",
+                        "1",
+                        ""
+                    ]
+                },
+                "description": "Update an existing employer by ID (replace '1' with the actual ID)."
+            },
+            "response": []
+        },
+        {
+            "name": "Delete Employer",
+            "request": {
+                "method": "DELETE",
+                "header": [
+                    {
+                        "key": "Authorization",
+                        "value": "Bearer {{access_token}}"
+                    }
+                ],
+                "url": {
+                    "raw": "{{base_url}}/api/employers/1/",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "employers",
+                        "1",
+                        ""
+                    ]
+                },
+                "description": "Delete an employer by ID (replace '1' with the actual ID)."
+            },
+            "response": []
+        },
+        {
+            "name": "Logout",
+            "request": {
+                "method": "POST",
+                "header": [
+                    {
+                        "key": "Content-Type",
+                        "value": "application/json"
+                    }
+                ],
+                "body": {
+                    "mode": "raw",
+                    "raw": "{\"refresh\": \"<replace_with_refresh_token>\"}"
+                },
+                "url": {
+                    "raw": "{{base_url}}/api/auth/logout/",
+                    "host": [
+                        "{{base_url}}"
+                    ],
+                    "path": [
+                        "api",
+                        "auth",
+                        "logout",
+                        ""
+                    ]
+                },
+                "description": "Log out by invalidating the refresh token (replace '<replace_with_refresh_token>' with the actual token from login response)."
+            },
+            "response": []
+        }
+    ],
+    "variable": [
+        {
+            "key": "base_url",
+            "value": "http://127.0.0.1:8000"
+        },
+        {
+            "key": "access_token",
+            "value": ""
+        }
+    ]
+}
